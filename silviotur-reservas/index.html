@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Silviotur.pa | Reserva de Passeio</title>
+  <style>
+    :root {
+      --bg: #eef7fb;
+      --bg2: #fff9ec;
+      --card: #ffffff;
+      --text: #123044;
+      --muted: #64748b;
+      --line: #d9e6ee;
+      --blue: #0f76a8;
+      --blue-dark: #075477;
+      --green: #10845b;
+      --orange: #ff9f1c;
+      --orange-soft: #fff4dc;
+      --red: #dc2626;
+      --shadow: 0 18px 45px rgba(7, 84, 119, .16);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255,159,28,.28), transparent 34%),
+        radial-gradient(circle at top right, rgba(15,118,168,.22), transparent 36%),
+        linear-gradient(180deg, var(--bg) 0%, #f7fbfd 55%, var(--bg2) 100%);
+      padding: 18px 12px 120px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      overflow: hidden;
+      position: relative;
+      padding: 28px 20px 24px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, #075477 0%, #0f76a8 55%, #27a6c9 100%);
+      color: #fff;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .hero:after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      bottom: -95px;
+      width: 230px;
+      height: 230px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.13);
+    }
+
+    .badge {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 13px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      font-size: .9rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: clamp(2.15rem, 9vw, 4rem);
+      letter-spacing: -.05em;
+      line-height: .98;
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      margin: 14px 0 0;
+      max-width: 560px;
+      line-height: 1.45;
+      color: rgba(255,255,255,.92);
+      font-size: clamp(1rem, 4.5vw, 1.18rem);
+    }
+
+    .card {
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(217,230,238,.9);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 16px 0;
+      box-shadow: 0 10px 28px rgba(15, 118, 168, .10);
+      backdrop-filter: blur(8px);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      font-size: clamp(1.35rem, 5vw, 1.9rem);
+      letter-spacing: -.03em;
+    }
+
+    .mini-text {
+      color: var(--muted);
+      line-height: 1.45;
+      margin: -8px 0 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: .96rem;
+      font-weight: 900;
+      color: #38556a;
+      margin: 13px 0 7px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 2px solid var(--line);
+      border-radius: 15px;
+      padding: 14px 13px;
+      font-size: 1rem;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+      transition: .18s;
+    }
+
+    textarea { min-height: 88px; resize: vertical; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #39a9d6;
+      box-shadow: 0 0 0 4px rgba(15,118,168,.10);
+    }
+
+    .tour-box {
+      border: 2px dashed #b9ddeb;
+      background: #f4fbfe;
+      border-radius: 20px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+
+    .tour-box strong { display: block; font-size: 1.05rem; }
+    .tour-box span { display: block; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+    .vehicle {
+      border: 1px solid #dceaf1;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+      border-radius: 22px;
+      padding: 16px;
+      margin: 14px 0;
+      position: relative;
+    }
+
+    .vehicle-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .vehicle-title {
+      font-weight: 900;
+      color: var(--blue-dark);
+      font-size: 1.05rem;
+    }
+
+    .remove {
+      width: auto;
+      border-radius: 999px;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 9px 12px;
+      font-size: .88rem;
+    }
+
+    .line-result {
+      margin-top: 14px;
+      padding: 13px;
+      border-radius: 16px;
+      background: #ecfdf5;
+      color: #065f46;
+      font-weight: 900;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      line-height: 1.35;
+    }
+
+    .line-result.consultar {
+      background: #fff7ed;
+      color: #9a3412;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 16px;
+      padding: 15px 14px;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    button:active { transform: scale(.98); }
+
+    .add-btn { background: #e0f2fe; color: #075477; }
+    .clear-btn { background: #eef2f7; color: #334155; }
+
+    .summary {
+      border-top: 8px solid var(--orange);
+    }
+
+    .total-box {
+      background: linear-gradient(135deg, #fff4dc 0%, #fff 100%);
+      border: 1px solid #fde2a4;
+      border-radius: 22px;
+      padding: 18px;
+      margin-top: 12px;
+    }
+
+    .total-label {
+      color: #9a6200;
+      font-size: .86rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .total {
+      font-size: clamp(2.2rem, 10vw, 3.7rem);
+      font-weight: 950;
+      letter-spacing: -.06em;
+      margin-top: 6px;
+      color: #7a4a00;
+    }
+
+    .summary-list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-list li {
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: #f8fafc;
+      color: #475569;
+      line-height: 1.35;
+      font-size: .96rem;
+    }
+
+    .send {
+      width: 100%;
+      margin-top: 16px;
+      background: linear-gradient(135deg, #13a463 0%, #0a7c50 100%);
+      color: #fff;
+      font-size: 1.08rem;
+      padding: 17px 16px;
+      box-shadow: 0 12px 28px rgba(16,132,91,.24);
+    }
+
+    .note {
+      background: #f8fafc;
+      border-left: 6px solid #39a9d6;
+      padding: 13px 14px;
+      border-radius: 16px;
+      color: #52677a;
+      line-height: 1.45;
+      margin-top: 14px;
+      font-size: .95rem;
+    }
+
+    .price-table {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .price-row {
+      display: grid;
+      grid-template-columns: 1.3fr .9fr .8fr;
+      gap: 8px;
+      align-items: center;
+      padding: 11px 12px;
+      border-radius: 14px;
+      background: #f8fafc;
+      color: #475569;
+      font-size: .92rem;
+    }
+
+    .price-row strong { color: var(--text); }
+
+    .footer {
+      text-align: center;
+      color: #7890a0;
+      line-height: 1.5;
+      font-size: .9rem;
+      padding: 16px 8px 0;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%) translateY(120px);
+      background: #123044;
+      color: #fff;
+      padding: 13px 18px;
+      border-radius: 999px;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      transition: .25s;
+      z-index: 20;
+      width: calc(100% - 32px);
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 620px) {
+      body { padding: 12px 10px 110px; }
+      .hero { padding: 24px 18px 22px; border-radius: 28px; }
+      .card { padding: 17px; }
+      .grid, .btn-row { grid-template-columns: 1fr; }
+      .price-row { grid-template-columns: 1fr; }
+      .line-result { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="badge">🚡 Silviotur.pa • Paulo Afonso - BA</div>
+      <h1>Reserva de Passeio</h1>
+      <p>Preencha os dados, adicione os veículos e veja o valor calculado automaticamente para a visita ao Complexo Hidrelétrico.</p>
+    </header>
+
+    <section class="card">
+      <h2 class="section-title">👤 Dados do responsável</h2>
+      <p class="mini-text">Essas informações serão usadas apenas para montar a mensagem de solicitação pelo WhatsApp.</p>
+
+      <label for="nome">Nome completo</label>
+      <input id="nome" type="text" placeholder="Digite o nome completo" autocomplete="name" />
+
+      <div class="grid">
+        <div>
+          <label for="cpf">CPF</label>
+          <input id="cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" />
+        </div>
+        <div>
+          <label for="telefone">Telefone para contato</label>
+          <input id="telefone" type="text" inputmode="tel" placeholder="(75) 99999-9999" />
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label for="dataPasseio">Data desejada</label>
+          <input id="dataPasseio" type="date" />
+        </div>
+        <div>
+          <label for="horario">Horário preferencial</label>
+          <input id="horario" type="time" />
+        </div>
+      </div>
+
+      <div class="tour-box">
+        <strong>⚡ Passeio selecionado</strong>
+        <span>Visita ao Complexo Hidrelétrico de Paulo Afonso | CHESF</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">🚗 Veículos e pessoas</h2>
+      <p class="mini-text">A pessoa pode adicionar carro próprio, carro do guia, van, ônibus, motorhome e outros veículos. O total aparece no final.</p>
+
+      <div id="vehicles"></div>
+
+      <div class="btn-row">
+        <button class="add-btn" type="button" id="addVehicle">+ Adicionar veículo</button>
+        <button class="clear-btn" type="button" id="clearAll">Limpar tudo</button>
+      </div>
+
+      <div class="note">
+        Observação: para carro próprio, informe a placa. Para carro do guia, o valor fica R$ 230,00 para até 5 pessoas. Acima das quantidades da tabela, o item será marcado como “consultar valor”.
+      </div>
+    </section>
+
+    <section class="card summary">
+      <h2 class="section-title">💰 Resultado final</h2>
+
+      <div class="total-box">
+        <div class="total-label">Valor calculado</div>
+        <div class="total" id="grandTotal">R$ 0,00</div>
+      </div>
+
+      <ul class="summary-list" id="summaryList"></ul>
+
+      <label for="obs">Observações</label>
+      <textarea id="obs" placeholder="Ex.: vou com família, excursão, preciso confirmar horário, ponto de encontro..."></textarea>
+
+      <button class="send" type="button" id="sendWhats">Enviar solicitação pelo WhatsApp</button>
+
+      <div class="note">
+        Os roteiros devem ser combinados diretamente com o guia. Se o guia não couber no veículo, poderá ser necessário acréscimo ou uso de outro veículo, conforme combinação.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">📋 Tabela usada no cálculo</h2>
+      <div class="price-table">
+        <div class="price-row"><strong>Carro próprio</strong><span>01 a 05 pessoas</span><strong>R$ 180,00</strong></div>
+        <div class="price-row"><strong>Carro próprio</strong><span>06 a 07 pessoas</span><strong>R$ 270,00</strong></div>
+        <div class="price-row"><strong>Carro do guia</strong><span>01 a 05 pessoas</span><strong>R$ 230,00</strong></div>
+        <div class="price-row"><strong>Vans</strong><span>08 a 20 pessoas</span><strong>R$ 360,00</strong></div>
+        <div class="price-row"><strong>Ônibus escolar / Micro-ônibus</strong><span>21 a 30 pessoas</span><strong>R$ 540,00</strong></div>
+        <div class="price-row"><strong>Ônibus acima de 30</strong><span>Por pessoa</span><strong>R$ 18,00</strong></div>
+        <div class="price-row"><strong>Motorhome</strong><span>01 a 05 pessoas</span><strong>R$ 180,00</strong></div>
+        <div class="price-row"><strong>Ônibus situações adversas</strong><span>08 a 15 pessoas</span><strong>R$ 360,00</strong></div>
+      </div>
+    </section>
+
+    <div class="footer">Silviotur.pa • Passeios turísticos locais e estaduais</div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <template id="vehicleTemplate">
+    <div class="vehicle">
+      <div class="vehicle-head">
+        <div class="vehicle-title">Veículo</div>
+        <button class="remove" type="button">Remover</button>
+      </div>
+
+      <label>Tipo de veículo</label>
+      <select class="tipo">
+        <option value="carro_proprio">Carro próprio</option>
+        <option value="carro_guia">Carro do guia</option>
+        <option value="van">Van</option>
+        <option value="onibus_micro">Ônibus escolar / Micro-ônibus</option>
+        <option value="onibus_acima_30">Ônibus acima de 30 pessoas</option>
+        <option value="motorhome">Motorhome pequeno/grande porte</option>
+        <option value="onibus_adverso">Ônibus situações adversas</option>
+      </select>
+
+      <div class="grid">
+        <div>
+          <label>Quantidade de veículos iguais</label>
+          <input class="qtdVeiculos" type="number" min="1" step="1" value="1" inputmode="numeric" />
+        </div>
+        <div>
+          <label>Pessoas em cada veículo/grupo</label>
+          <input class="pessoas" type="number" min="1" step="1" value="1" inputmode="numeric" />
+        </div>
+      </div>
+
+      <div class="placaWrap">
+        <label>Placa do veículo</label>
+        <input class="placa" type="text" placeholder="Ex.: ABC1D23. Se tiver mais de uma, separe por vírgula." />
+      </div>
+
+      <div class="line-result"><span>Valor deste item</span><strong>R$ 0,00</strong></div>
+    </div>
+  </template>
+
+  <script>
+    const WHATSAPP_DESTINO = "5575988085626";
+
+    const vehiclesEl = document.getElementById("vehicles");
+    const template = document.getElementById("vehicleTemplate");
+    const grandTotalEl = document.getElementById("grandTotal");
+    const summaryListEl = document.getElementById("summaryList");
+    const toastEl = document.getElementById("toast");
+
+    const tipoNomes = {
+      carro_proprio: "Carro próprio",
+      carro_guia: "Carro do guia",
+      van: "Van",
+      onibus_micro: "Ônibus escolar / Micro-ônibus",
+      onibus_acima_30: "Ônibus acima de 30 pessoas",
+      motorhome: "Motorhome pequeno/grande porte",
+      onibus_adverso: "Ônibus situações adversas"
+    };
+
+    function moeda(valor) {
+      return Number(valor || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    function onlyDigits(value) {
+      return (value || "").replace(/\D/g, "");
+    }
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 2800);
+    }
+
+    function calcularItem(tipo, pessoas, qtdVeiculos) {
+      let unitario = 0;
+      let consultar = false;
+      let detalhe = "";
+
+      if (tipo === "carro_proprio") {
+        if (pessoas >= 1 && pessoas <= 5) { unitario = 180; detalhe = "01 a 05 pessoas"; }
+        else if (pessoas >= 6 && pessoas <= 7) { unitario = 270; detalhe = "06 a 07 pessoas"; }
+        else { consultar = true; detalhe = "acima da faixa de carro próprio"; }
+      }
+
+      if (tipo === "carro_guia") {
+        if (pessoas >= 1 && pessoas <= 5) { unitario = 230; detalhe = "01 a 05 pessoas"; }
+        else { consultar = true; detalhe = "carro do guia acima de 5 pessoas"; }
+      }
+
+      if (tipo === "van") {
+        if (pessoas >= 8 && pessoas <= 20) { unitario = 360; detalhe = "08 a 20 pessoas"; }
+        else { consultar = true; detalhe = "fora da faixa de van"; }
+      }
+
+      if (tipo === "onibus_micro") {
+        if (pessoas >= 21 && pessoas <= 30) { unitario = 540; detalhe = "21 a 30 pessoas"; }
+        else { consultar = true; detalhe = "fora da faixa de ônibus escolar/micro-ônibus"; }
+      }
+
+      if (tipo === "onibus_acima_30") {
+        if (pessoas > 30) { unitario = pessoas * 18; detalhe = `${pessoas} pessoas x R$ 18,00`; }
+        else { consultar = true; detalhe = "somente acima de 30 pessoas"; }
+      }
+
+      if (tipo === "motorhome") {
+        if (pessoas >= 1 && pessoas <= 5) { unitario = 180; detalhe = "01 a 05 pessoas"; }
+        else { consultar = true; detalhe = "motorhome acima de 5 pessoas"; }
+      }
+
+      if (tipo === "onibus_adverso") {
+        if (pessoas >= 8 && pessoas <= 15) { unitario = 360; detalhe = "08 a 15 pessoas"; }
+        else { consultar = true; detalhe = "fora da faixa de situações adversas"; }
+      }
+
+      return {
+        unitario,
+        total: consultar ? 0 : unitario * qtdVeiculos,
+        consultar,
+        detalhe
+      };
+    }
+
+    function atualizarNumeros() {
+      document.querySelectorAll(".vehicle").forEach((card, index) => {
+        card.querySelector(".vehicle-title").textContent = `Veículo ${index + 1}`;
+      });
+    }
+
+    function atualizarPlaca(card) {
+      const tipo = card.querySelector(".tipo").value;
+      const wrap = card.querySelector(".placaWrap");
+      const placaInput = card.querySelector(".placa");
+
+      if (tipo === "carro_guia") {
+        wrap.style.display = "none";
+        placaInput.value = "";
+      } else {
+        wrap.style.display = "block";
+        if (tipo === "carro_proprio") {
+          placaInput.placeholder = "Obrigatório. Ex.: ABC1D23. Se tiver mais de uma, separe por vírgula.";
+        } else {
+          placaInput.placeholder = "Opcional. Ex.: ABC1D23. Se tiver mais de uma, separe por vírgula.";
+        }
+      }
+    }
+
+    function obterItens() {
+      const cards = [...document.querySelectorAll(".vehicle")];
+      return cards.map((card) => {
+        const tipo = card.querySelector(".tipo").value;
+        const qtdVeiculos = Math.max(1, parseInt(card.querySelector(".qtdVeiculos").value || "1", 10));
+        const pessoas = Math.max(1, parseInt(card.querySelector(".pessoas").value || "1", 10));
+        const placa = card.querySelector(".placa").value.trim();
+        const calc = calcularItem(tipo, pessoas, qtdVeiculos);
+        return { card, tipo, qtdVeiculos, pessoas, placa, ...calc };
+      });
+    }
+
+    function atualizarResumo() {
+      const itens = obterItens();
+      let total = 0;
+      let possuiConsulta = false;
+      summaryListEl.innerHTML = "";
+
+      itens.forEach((item, index) => {
+        total += item.total;
+        if (item.consultar) possuiConsulta = true;
+
+        const result = item.card.querySelector(".line-result");
+        result.classList.toggle("consultar", item.consultar);
+        result.innerHTML = item.consultar
+          ? `<span>Valor deste item</span><strong>Consultar valor</strong>`
+          : `<span>Valor deste item</span><strong>${moeda(item.total)}</strong>`;
+
+        const placaTexto = item.placa ? ` • Placa: ${item.placa}` : "";
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${index + 1}. ${tipoNomes[item.tipo]}</strong> — ${item.qtdVeiculos} veículo(s), ${item.pessoas} pessoa(s) por veículo/grupo • ${item.detalhe}${placaTexto} • <strong>${item.consultar ? "Consultar valor" : moeda(item.total)}</strong>`;
+        summaryListEl.appendChild(li);
+      });
+
+      grandTotalEl.textContent = possuiConsulta ? `${moeda(total)} + consultar` : moeda(total);
+
+      if (itens.length === 0) {
+        grandTotalEl.textContent = moeda(0);
+        const li = document.createElement("li");
+        li.textContent = "Adicione pelo menos um veículo para calcular o valor.";
+        summaryListEl.appendChild(li);
+      }
+    }
+
+    function addVehicle(defaultTipo = "carro_proprio") {
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector(".vehicle");
+      card.querySelector(".tipo").value = defaultTipo;
+
+      card.querySelectorAll("input, select").forEach(el => {
+        el.addEventListener("input", () => { atualizarPlaca(card); atualizarResumo(); });
+        el.addEventListener("change", () => { atualizarPlaca(card); atualizarResumo(); });
+      });
+
+      card.querySelector(".remove").addEventListener("click", () => {
+        card.remove();
+        atualizarNumeros();
+        atualizarResumo();
+      });
+
+      vehiclesEl.appendChild(clone);
+      atualizarNumeros();
+      atualizarPlaca(card);
+      atualizarResumo();
+    }
+
+    function limparTudo() {
+      document.getElementById("nome").value = "";
+      document.getElementById("cpf").value = "";
+      document.getElementById("telefone").value = "";
+      document.getElementById("dataPasseio").value = "";
+      document.getElementById("horario").value = "";
+      document.getElementById("obs").value = "";
+      vehiclesEl.innerHTML = "";
+      addVehicle();
+      showToast("Formulário limpo.");
+    }
+
+    function formatarData(data) {
+      if (!data) return "Não informada";
+      const [ano, mes, dia] = data.split("-");
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    function validar() {
+      const nome = document.getElementById("nome").value.trim();
+      const cpf = document.getElementById("cpf").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+      const itens = obterItens();
+
+      if (!nome) return "Preencha o nome completo.";
+      if (!cpf) return "Preencha o CPF.";
+      if (onlyDigits(cpf).length !== 11) return "Confira o CPF. Ele precisa ter 11 números.";
+      if (!telefone) return "Preencha o telefone para contato.";
+      if (itens.length === 0) return "Adicione pelo menos um veículo.";
+
+      for (const item of itens) {
+        if (item.tipo === "carro_proprio" && !item.placa) {
+          return "Informe a placa do carro próprio.";
+        }
+      }
+
+      return "";
+    }
+
+    function montarMensagem() {
+      const nome = document.getElementById("nome").value.trim();
+      const cpf = document.getElementById("cpf").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+      const data = formatarData(document.getElementById("dataPasseio").value);
+      const horario = document.getElementById("horario").value || "Não informado";
+      const obs = document.getElementById("obs").value.trim() || "Nenhuma";
+      const itens = obterItens();
+      const total = itens.reduce((acc, item) => acc + item.total, 0);
+      const possuiConsulta = itens.some(item => item.consultar);
+
+      const linhasVeiculos = itens.map((item, index) => {
+        const placaTexto = item.placa ? `\n   Placa(s): ${item.placa}` : "";
+        const valorTexto = item.consultar ? "Consultar valor" : moeda(item.total);
+        return `${index + 1}) ${tipoNomes[item.tipo]}\n   Qtd. veículos: ${item.qtdVeiculos}\n   Pessoas por veículo/grupo: ${item.pessoas}\n   Faixa/cálculo: ${item.detalhe}${placaTexto}\n   Valor: ${valorTexto}`;
+      }).join("\n\n");
+
+      return `Olá! Tenho interesse em agendar um passeio com a Silviotur.pa.\n\n*Passeio:* Complexo Hidrelétrico de Paulo Afonso / CHESF\n\n*Dados do responsável*\nNome: ${nome}\nCPF: ${cpf}\nTelefone: ${telefone}\nData desejada: ${data}\nHorário preferencial: ${horario}\n\n*Veículos e cálculo*\n${linhasVeiculos}\n\n*Valor final:* ${possuiConsulta ? `${moeda(total)} + itens para consultar` : moeda(total)}\n\n*Observações:* ${obs}`;
+    }
+
+    function enviarWhatsApp() {
+      const erro = validar();
+      if (erro) {
+        showToast(erro);
+        return;
+      }
+      const mensagem = montarMensagem();
+      const url = `https://wa.me/${WHATSAPP_DESTINO}?text=${encodeURIComponent(mensagem)}`;
+      window.open(url, "_blank");
+    }
+
+    document.getElementById("addVehicle").addEventListener("click", () => addVehicle());
+    document.getElementById("clearAll").addEventListener("click", limparTudo);
+    document.getElementById("sendWhats").addEventListener("click", enviarWhatsApp);
+
+    document.getElementById("cpf").addEventListener("input", (e) => {
+      let v = onlyDigits(e.target.value).slice(0, 11);
+      v = v.replace(/(\d{3})(\d)/, "$1.$2");
+      v = v.replace(/(\d{3})(\d)/, "$1.$2");
+      v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+      e.target.value = v;
+    });
+
+    document.getElementById("telefone").addEventListener("input", (e) => {
+      let v = onlyDigits(e.target.value).slice(0, 11);
+      if (v.length > 10) {
+        v = v.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+      } else if (v.length > 6) {
+        v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+      } else if (v.length > 2) {
+        v = v.replace(/(\d{2})(\d{0,5})/, "($1) $2");
+      }
+      e.target.value = v;
+    });
+
+    addVehicle();
+  </script>
+</body>
+</html>
